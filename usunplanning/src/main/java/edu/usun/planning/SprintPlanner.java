@@ -1,5 +1,10 @@
 package edu.usun.planning;
 
+/**
+ * Command-line entry point for sprints planning.
+ * 
+ * @author usun
+ */
 public class SprintPlanner {
 	
 	/**

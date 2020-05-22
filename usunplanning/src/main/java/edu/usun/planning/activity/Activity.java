@@ -1,6 +1,3 @@
-/**
- * 
- */
 package edu.usun.planning.activity;
 
 import edu.usun.planning.PlanEntity;
@@ -12,15 +9,17 @@ import edu.usun.planning.stream.Stream;
  * @author usun
  */
 public abstract class Activity extends PlanEntity {
+	
 	/**
 	 * For serialization format.
 	 */
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * Reference to JIRA.
+	 * Reference to a ticket within a tracking system corresponding to this planned activity 
+	 * (e.g. JIRA epic number). Usually refers to items within main internal/company tracking system.
 	 */
-	protected String jiraReference;
+	protected String trackingReference;
 	
 	/**
 	 * Stream / project under which activity is tracked. 
@@ -37,17 +36,17 @@ public abstract class Activity extends PlanEntity {
 	}
 
 	/**
-	 * @return the jiraReference
+	 * @return the trackingReference
 	 */
-	public String getJiraReference() {
-		return jiraReference;
+	public String getTrackingReference() {
+		return trackingReference;
 	}
 
 	/**
-	 * @param jiraReference the jiraReference to set
+	 * @param trackingReference the trackingReference to set
 	 */
-	public void setJiraReference(String jiraReference) {
-		this.jiraReference = jiraReference;
+	public void setTrackingReference(String trackingReference) {
+		this.trackingReference = trackingReference;
 	}
 
 	/**
@@ -64,5 +63,16 @@ public abstract class Activity extends PlanEntity {
 		this.stream = stream;
 	}
 	
-	
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return new StringBuffer()
+			.append("Activity{")
+			.append("name=").append(this.getName()).append(',')
+			.append("trackingReference=").append(this.getTrackingReference()).append(',')
+			.append("stream=").append(this.getStream())
+			.append('}').toString();
+	}
 }
