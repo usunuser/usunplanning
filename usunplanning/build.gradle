@@ -1,0 +1,33 @@
+apply plugin: "java"
+
+version = "0.1"
+archivesBaseName = "usunplanning"
+
+repositories {
+    jcenter()
+	mavenCentral()
+}
+
+dependencies {
+
+    // Use JUnit test framework
+    testImplementation "junit:junit:4.12"
+	
+	// https://mvnrepository.com/artifact/org.apache.poi/poi
+	implementation group: "org.apache.poi", name: "poi", version: "4.1.2"
+	
+}
+
+sourceSets {
+	main.java.srcDir "src/main/java"
+	test.java.srcDir "src/test/java"
+}
+
+jar {
+	manifest.attributes "Main-Class": "edu.usun.planning.SprintPlanner"
+}
+
+task planSprints(type: JavaExec) {
+	main = "edu.usun.planning.SprintPlanner"
+	classpath = files(tasks.jar)
+}
