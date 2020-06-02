@@ -54,7 +54,6 @@ public class WorkCalendar extends PlanEntity {
 			.append("publicHolidays=[");
 			
 		if (this.getPublicHolidays() != null && !this.getPublicHolidays().isEmpty()) {
-			this.getPublicHolidays().stream().forEachOrdered((holiday -> sb.append(holiday).append(',')));
 			sb.append(this.getPublicHolidays()
 				.stream()
 				.map(CapacityOverride::toString)

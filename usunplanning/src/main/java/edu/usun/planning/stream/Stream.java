@@ -26,7 +26,8 @@ public class Stream extends PlanEntity {
 	public static final String STREAM_NOT_ASSIGNED = "N/A";
 	
 	/** 
-	 * Known activities to track in planning for the given sprint. Can include features, general support activities like extra UAT, etc.
+	 * Known activities to track in planning for the given sprint. Can include features, 
+	 * general support activities like extra UAT, etc.
 	 */
 	protected List<Activity> activities;
 	
@@ -73,7 +74,6 @@ public class Stream extends PlanEntity {
 			.append("activities=[");
 
 		if (this.getActivities() != null && !this.getActivities().isEmpty()) {
-			this.getActivities().stream().forEachOrdered((holiday -> sb.append(holiday).append(',')));
 			sb.append(this.getActivities()
 				.stream()
 				.map(Activity::toString)
