@@ -23,6 +23,13 @@ public class Vertex <K, V> {
 	 */
 	protected V value;
 	
+	/** 
+	 * Indicates if Vertex is considered visited. 
+	 * It is used in various algorithms as a temp set flag (e.g. min spanning tree construction,
+	 * or depth first search for the path between vertices).
+	 */
+	private boolean visited;
+	
 	/**
 	 * Default empty constructor, business data is empty.
 	 */
@@ -40,9 +47,31 @@ public class Vertex <K, V> {
 		super();
 		this.key = key;
 		this.value = value;
+		this.visited = false;
 	}
 	
+	/**
+	 * Mark vertex as visited.
+	 */
+	public void visit() {
+		this.visited = true;
+	}
 	
+	/**
+	 * Mark vertex as not visited.
+	 */
+	public void unvisit() {
+		this.visited = false;
+	}
+	
+	/**
+	 * @return Indicator if this vertex was visited.
+	 * It is used in various algorithms as a temp set flag (e.g. min spanning tree construction,
+	 * or depth first search for the path between vertices).
+	 */
+	public boolean isVisited() {
+		return this.visited;
+	}
 	
 	/**
 	 * @return Contains business data associated with a given graph vortex.
@@ -81,6 +110,9 @@ public class Vertex <K, V> {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(this.key).append('=').append(this.value);
+		if (this.visited) {
+			sb.append("-visited");
+		}
 		return sb.toString();
 	}
 }

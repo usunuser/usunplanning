@@ -1,258 +1,160 @@
 package edu.usun.common.graph;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
 /**
- * Graph representation. Not thread-safe.
- * Contains vertices objects. Edges are represented by adjacency matrix.
+ * Graph representation. Contains vertices objects and edges (represented by
+ * Edge objects and internally by adjacency matrix usually).
+ * 
  * @author usun
  *
- * @param <K> Key representing a vertex, it will be used for comparisons with other
- * vertices for equality. Should be unique in a graph. Cannot be null.
- * @param <V> Contains business data associated with a given graph vortex. 
- * Duplicates and null values are generally allowed, because K key template type is used to identify the vertex.
+ * @param <K> Key representing a vertex, it will be used for comparisons with
+ *            other vertices for equality. Should be unique in a graph. Cannot
+ *            be null.
+ * @param <V> Contains business data associated with a given graph vortex.
+ *            Duplicates and null values are generally allowed, because K key
+ *            template type is used to identify the vertex.
  */
-public class Graph <K, V> {
-	
-	/**
-	 * Maximum amount of vertices allowed is 23170, which is around a half of 
-	 * square root of maximum integer and minus 8. The limitation is due to adjacency 
-	 * maxtrix which will be created which is N*N size in 2d array holding Integer values and 
-	 * multiple internal collections.
-	 */
-	public static final int MAXIMMUM_VERTICES_SIZE = 23170;
-	
-	/**
-	 * Default size for expected maximum amount of vertices.
-	 */
-	protected static final int DEFAULT_MAX_SIZE = 8;
-	
-	/**
-	 * Indication within adjacency matrix that there is no adjacency between vertices.
-	 */
-	protected static final int NOT_ADJACENT = 0;
-	
-	/**
-	 * Indication within adjacency matrix that there is no adjacency between vertices.
-	 */
-	protected static final int ADJACENT = 1;
+public interface Graph<K, V> extends Cloneable {
 
-	/**
-	 * Auto-expandable list holding vertices of the graph.
-	 */
-	protected List<Vertex<K, V>> vertices;
-	
-	/**
-	 * To ensure uniqueness of the keys used for graph vertices, 
-	 * it is also used to track it's index to find in internal lists 
-	 * and adjacency matrix.
-	 */
-	protected Map<K, Integer> vertexLocation;
-	
-	/**
-	 * Initial max size allocated. 
-	 * Max of it and current size will be used internally to 
-	 * account for auto-extensions of graph size.
-	 */
-	protected int initialMaxSize;
-	
-	/**
-	 * Adjacency graph matrix.
-	 */
-	protected List<List<Integer>> adjacencyMatrix;
-	
-	/**
-	 * Default constructor with default expected maximum amount of vertices.
-	 * If exceeded, the graph will auto-expand.
-	 */
-	public Graph() {
-		this(DEFAULT_MAX_SIZE);
-	}
-	
-	/**
-	 * Constructor with provided maximum expected amount of vertices. 
-	 * If this amount is exceeded, internal graph storage will auto-expand.
-	 * @param maxSize The maximum expected amount of vertices. Not a hard limit, 
-	 * but it's advised to set it correctly for performance reasons. 
-	 */
-	public Graph(int maxSize) {
-		super();
-		if (maxSize <= 0 || maxSize > MAXIMMUM_VERTICES_SIZE) {
-			throw new IllegalArgumentException(
-				"Maximum expected amount of vertices should be >0 and <=" + MAXIMMUM_VERTICES_SIZE);
-		}
-		this.initialMaxSize = maxSize;
-		this.vertices = new ArrayList<Vertex<K, V>>(maxSize);
-		this.adjacencyMatrix = new ArrayList<List<Integer>>(maxSize);
-		this.vertexLocation = new HashMap<K, Integer>(maxSize * 2, 0.5f);
-	}
-	
 	/**
 	 * @return Indication if graph is empty (i.e. no vertices).
 	 */
-	public boolean isEmpty() {
-		return this.vertices.isEmpty();
-	}
+	boolean isEmpty();
 	
 	/**
+	 * @return The size of the graph (amount of vertices).
+	 */
+	int size();
+
+	/**
+	 * Checks if vertex with a given key is a part of the graph.
+	 * 
 	 * @param key Key for vertex to check.
 	 * @return True if key is not null and already added to the graph.
 	 */
-	public boolean containsVertexKey(K key) {
-		return key != null && this.vertexLocation.containsKey(key);
-	}
-	
+	boolean containsVertexKey(K key);
+
 	/**
-	 * Add vertex to the graph with only key information, business data is set to null.
+	 * Add vertex to the graph with only key information, business data is set to
+	 * null.
+	 * 
 	 * @param key The key object representing the vertex.
+	 * @return This updated graph object.
 	 */
-	public void addVertexKey(K key) {
-		addVertex(key, null);
-	}
+	Graph<K, V> addVertexKey(K key);
+
+	/**
+	 * Add vertex to the graph. Call containsVertexKey prior adding this unless you
+	 * are sure there are no vertices with such key. Duplicates for keys are not
+	 * allowed within a graph.
+	 * 
+	 * @param key   The key object representing the vertex.
+	 * @param value The business data object associated with the vertex. Can be
+	 *              null. Can have duplicates.
+	 * @return This updated graph object.
+	 */
+	Graph<K, V> addVertex(K key, V value);
 	
 	/**
-	 * Add vertex to the graph. Call containsVertexKey prior adding this unless you are sure there are no 
-	 * vertices with such key. Duplicates for keys are not allowed within a graph.
-	 * @param key The key object representing the vertex.
-	 * @param value The business data object associated with the vertex. Can be null. Can have duplicates.
+	 * Removes vertex with a given key from the graph, including 
+	 * removal of all edges including it.
+	 * 
+	 * @param key The key of the vertex to remove. Throws IllegalArgumentException if key is not found.
+	 * @return This updated graph object.
 	 */
-	public void addVertex(K key, V value) {
-		if (key == null) {
-			throw new IllegalArgumentException("Key representing vertex cannot be null.");
-		}
-		if (containsVertexKey(key)) {
-			throw new IllegalArgumentException("Vertex key " + key + "is already part of the graph.");
-		}
-		int newVertexIndex = this.vertices.size();
-		// Auto-expandable
-		this.vertices.add(new Vertex<K,V>(key, value));
-		this.vertexLocation.put(key, newVertexIndex);
-		
-		// Append new node into adjacency matrix both like new column and a row, 
-		// it is added as a disconnected vertex, so all values are 0.
-		for (List<Integer> column : this.adjacencyMatrix) {
-			column.add(NOT_ADJACENT);
-		}
-		// Populating new row without adjacency.
-		List<Integer> row = new ArrayList<Integer>(
-			newAdjacencyMatrixMaximumDimension(newVertexIndex + 1));
-		for (int i = 0; i <= newVertexIndex; i++) {
-			row.add(NOT_ADJACENT);
-		}
-		// Add new row.
-		this.adjacencyMatrix.add(row);
-	}
+	Graph<K, V> removeVertex(K key);
 	
 	/**
-	 * Update adjacency matrix for provided vertices to mark them as linked.
+	 * Link vertices with given keys. Single direction from key1 to key2. Unweighed.
+	 * @param key1 The origin vertex to link. Should be part of the graph.
+	 * @param key2 The destination vertex to link. Should be part of the graph.
+	 * @return This updated graph object.
+	 */
+	Graph<K, V> addEdgeOneway(K key1, K key2);
+	
+	/**
+	 * Link vertices with given keys. Bi-directional. Unweighed.
 	 * @param key1 The first vertex to link. Symmetrical. Should be part of the graph.
 	 * @param key2 The second vertex to link. Symmetrical. Should be part of the graph.
+	 * @return This updated graph object.
 	 */
-	public void link(K key1, K key2) {
-		updateAdjacency(key1, key2, ADJACENT);
-	}
+	Graph<K, V> addEdge(K key1, K key2);
 	
 	/**
-	 * Update adjacency matrix for provided vertices to mark them as not linked.
+	 * Link vertices with given keys. Unweighed.
+	 * @param key1 The first vertex to link. Should be part of the graph.
+	 * @param key2 The second vertex to link. Should be part of the graph.
+	 * @param biDirectional If the edge is bi-directional, if false the direction is from key1 to key2.
+	 * @return This updated graph object.
+	 */
+	Graph<K, V> addEdge(K key1, K key2, boolean biDirectional);
+	
+	/**
+	 * Unlink vertices with given keys. Bi-directional, meaning both directions are removed. Unweighed.
 	 * @param key1 The first vertex to unlink. Symmetrical. Should be part of the graph.
 	 * @param key2 The second vertex to unlink. Symmetrical. Should be part of the graph.
+	 * @return This updated graph object.
 	 */
-	public void unlink(K key1, K key2) {
-		updateAdjacency(key1, key2, NOT_ADJACENT);
-	}
+	Graph<K, V> removeEdge(K key1, K key2);
 	
 	/**
-	 * Update value in adjacency matrix for provided vertices.
-	 * @param key1 The first vertex to link. Symmetrical. Should be part of the graph.
-	 * @param key2 The second vertex to link. Symmetrical. Should be part of the graph.
-	 * @param adjacencyValue New adjacency value for the matrix.
+	 * Unlink vertices with given keys.
+	 * @param key1 The first vertex to unlink. Should be part of the graph.
+	 * @param key2 The second vertex to unlink. Should be part of the graph.
+	 * @param biDirectional If the edge is bi-directional, if false the direction is from key1 to key2.
+	 * @return This updated graph object.
 	 */
-	protected void updateAdjacency(K key1, K key2, int adjacencyValue) {
-		if (!containsVertexKey(key1)) {
-			throw new IllegalArgumentException("Vertex with key " + key1 + " is not part of the graph.");
-		}
-		if (!containsVertexKey(key2)) {
-			throw new IllegalArgumentException("Vertex with key " + key2 + " is not part of the graph.");
-		}
-		int index1 = getVertexIndex(key1);
-		int index2 = getVertexIndex(key2);
-		
-		// Populate for both places in the mirror matrix.
-		this.adjacencyMatrix.get(index1).set(index2, adjacencyValue);
-		this.adjacencyMatrix.get(index2).set(index1, adjacencyValue);
-	}
+	Graph<K, V> removeEdge(K key1, K key2, boolean biDirectional);
 	
 	/**
-	 * @param key Vertex key to search for.
-	 * @return Vertex index for internal storages (vertices list, adjacency matrix).
+	 * Checks if vertices with given keys are connected. Directions of edges are taken into account.
+	 * @param key1 The source vertex key.
+	 * @param key2 The destination vertex key.
+	 * @return Indicates if there is a path from the given source vertex to destination.
 	 */
-	protected int getVertexIndex(K key) {
-		if (!this.vertexLocation.containsKey(key)) {
-			throw new IllegalArgumentException("Vertex with key " + key + " is not part of the graph.");
-		}
-		return this.vertexLocation.get(key);
-	}
+	boolean areConnected(K source, K destination);
 	
 	/**
-	 * @param currentSize Current size (in terms of elements there of assessed collections).
-	 * @return The maximum of currentSize and initial max size allocated to the graph.
+	 * @return Returns deep copy of the graph structure
+	 * (K key object and V value object references are the same under vertices). 
 	 */
-	protected int newAdjacencyMatrixMaximumDimension(int currentSize) {
-		return Math.max(currentSize, this.initialMaxSize);
-	}
+	Graph<K, V> clone();
 	
 	/**
-	 * Trace logging into System.out, to be used only for local development for debugging purposes.
+	 * Get vertex keys for directed acyclic graph (DAG) in the topologically sorted order.
+	 * If cycles are found inside graph - an IllegalStateException is thrown on the runtime.
+	 * @param graph The graph.
+	 * @return List of the K vertex key objects of this graph in the topological order.
 	 */
-	public void traceGraph() {
-		System.out.println("Vertice keys: ");
-		System.out.println(this.vertices.stream()
-			.map(vertex -> vertex == null || vertex.getKey() == null ? "null" : vertex.getKey().toString())
-			.collect(Collectors.joining(",")));
-		System.out.println("Adjacency matrix:");
-		this.adjacencyMatrix.stream()
-			.forEachOrdered(list -> System.out.println(
-				list.stream()
-					.map(adj -> adj.toString())
-					.collect(Collectors.joining(","))));
-		System.out.println("Vertex keys to indexes: " + this.vertexLocation);
-	}
+	List<K> getKeysInTopologicalOrder();
 	
 	/**
-	 * Local tests only during initial development. Use unit tests for actual autotesting.
-	 * @param args System arguments.
+	 * @return The connectivity table. Each vertex is represent by the row 
+	 * with a list of all connected (reachable) vertexes to it.
 	 */
-	public static void main(String[] args) {
-		System.out.println("----------------");
-		Graph<String, String> graph =  new Graph<String, String>(5);
-		graph.addVertexKey("A");
-		graph.addVertexKey("B");
-		graph.addVertexKey("C");
-		graph.addVertexKey("D");
-		graph.addVertexKey("E");
-		graph.link("A", "C");
-		graph.link("A", "D");
-		graph.link("B", "C");
-		graph.link("B", "E");
-		System.out.println("Added: A,B,C,D,E; linked: AC,AD,BC,BE");
-		graph.traceGraph();
-		System.out.println("----------------");
-		
-		
-		graph.addVertexKey("F");
-		graph.addVertexKey("G");
-		graph.link("E", "F");
-		graph.link("F", "G");
-		graph.link("A", "G");
-		System.out.println("Added: F,G; linked: EF,FG,AG");
-		graph.traceGraph();
-		System.out.println("----------------");
-		
-		graph.unlink("F", "G");
-		System.out.println("Unlinked: FG");
-		graph.traceGraph();
-		System.out.println("----------------");
-		
-	}
+	List<List<K>> getConnectivityTable();
+	
+	/**
+	 * Construct minimum spanning tree for this graph. The graph must be connected.
+	 * @return A new sub-graph containing minimum spanning tree of the original graph.
+	 */
+	Graph<K, V> getMinSpanningTree();
+	
+	/**
+	 * Finds a path from vertex represented by key1 to vertex represented by key2.
+	 * @param key1 The origin vertex key.
+	 * @param key2 The destination vertex key.
+	 * @return The list of vertex keys representing a path from key1 to key2. The first one found is returned 
+	 * depending on the underlying implementation.
+	 */
+	List<K> findPath(K key1, K key2);
+	
+	/**
+	 * Finds the shortest path from vertex represented by key1 to vertex represented by key2.
+	 * @param key1 The origin vertex key.
+	 * @param key2 The destination vertex key.
+	 * @return The list of vertex keys representing the shortest path from key1 to key2.
+	 */
+	List<K> findTheShortestPath(K key1, K key2);
 }
