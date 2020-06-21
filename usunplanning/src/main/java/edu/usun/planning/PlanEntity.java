@@ -51,9 +51,6 @@ public abstract class PlanEntity implements Serializable, Cloneable {
 	 */
 	@Override
 	public String toString() {
-		return new StringBuffer()
-			.append("PlanEntity{")
-			.append("name=").append(this.getName())
-			.append('}').toString();
+		return PlanEntityUtils.toStringStandard(this, new String[] { "name" });
 	}
 }

@@ -1,9 +1,9 @@
 package edu.usun.planning.release;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import edu.usun.planning.PlanEntity;
+import edu.usun.planning.PlanEntityUtils;
 
 /**
  * Release drop information (e.g. corresponds to JIRA release entity, 
@@ -21,7 +21,7 @@ public class Release extends PlanEntity {
 
 	/**
 	 * Project prefix, e.g. "usunplanning".
-	 * Not the same as JIRA project code.
+	 * Not the same as project tracking reference.
 	 */
 	protected String projectPrefix;
 	
@@ -31,10 +31,10 @@ public class Release extends PlanEntity {
 	protected String description;
 	
 	/**
-	 * Project name/code in JIRA.
+	 * Project name/code in tracking system.
 	 * To be used mostly for integration purposes.
 	 */
-	protected String jiraProject;
+	protected String projectTrackingReference;
 	
 	/**
 	 * Date of delivery to integration team / branches.
@@ -58,17 +58,17 @@ public class Release extends PlanEntity {
 	 * @param name The release name/version to set.
 	 * @param projectPrefix The projectPrefix to set.
 	 * @param description The description to set.
-	 * @param jiraProject The jiraProject to set.
+	 * @param projectTrackingReference The jiraProject to set.
 	 * @param deliveryToIntegration The deliveryToIntegration to set.
 	 * @param deliveryToCustomer The deliveryToCustomer to set.
 	 */
-	public Release(String name, String projectPrefix, String description, String jiraProject,
+	public Release(String name, String projectPrefix, String description, String projectTrackingReference,
 		Calendar deliveryToIntegration, Calendar deliveryToCustomer) {
 		super();
 		this.name = name;
 		this.projectPrefix = projectPrefix;
 		this.description = description;
-		this.jiraProject = jiraProject;
+		this.projectTrackingReference = projectTrackingReference;
 		this.deliveryToIntegration = deliveryToIntegration;
 		this.deliveryToCustomer = deliveryToCustomer;
 	}
@@ -100,21 +100,21 @@ public class Release extends PlanEntity {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-	/**
-	 * @return the jiraProject
-	 */
-	public String getJiraProject() {
-		return jiraProject;
-	}
-
-	/**
-	 * @param jiraProject the jiraProject to set
-	 */
-	public void setJiraProject(String jiraProject) {
-		this.jiraProject = jiraProject;
-	}
 	
+	/**
+	 * @return the projectTrackingReference
+	 */
+	public String getProjectTrackingReference() {
+		return projectTrackingReference;
+	}
+
+	/**
+	 * @param projectTrackingReference the projectTrackingReference to set
+	 */
+	public void setProjectTrackingReference(String projectTrackingReference) {
+		this.projectTrackingReference = projectTrackingReference;
+	}
+
 	/**
 	 * @return the deliveryToIntegration
 	 */
@@ -148,17 +148,8 @@ public class Release extends PlanEntity {
 	 */
 	@Override
 	public String toString() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		StringBuffer sb = new StringBuffer()
-			.append("Release{")
-			.append("name=").append(this.getName()).append(',')
-			.append("projectPrefix=").append(this.getProjectPrefix()).append(',')
-			.append("description=").append(this.getDescription()).append(',')
-			.append("jiraProject=").append(this.getJiraProject()).append(',')
-			.append("deliveryToIntegration=").append(this.getDeliveryToIntegration() == null ? "N/A" : 
-				sdf.format(this.getDeliveryToIntegration().getTime())).append(',')
-			.append("deliveryToCustomer=").append(this.getDeliveryToCustomer() == null ? "N/A" : 
-				sdf.format(this.getDeliveryToCustomer().getTime()));
-		return sb.append('}').toString();
+		return PlanEntityUtils.toStringStandard(this, new String[] {
+			"name", "projectPrefix", "description", "projectTrackingReference", 
+			"deliveryToIntegration", "deliveryToCustomer"});
 	}
 }

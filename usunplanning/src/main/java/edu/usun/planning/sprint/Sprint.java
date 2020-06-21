@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import edu.usun.planning.PlanEntity;
+import edu.usun.planning.PlanEntityUtils;
 import edu.usun.planning.release.Release;
 
 /**
@@ -36,14 +37,12 @@ public class Sprint extends PlanEntity {
 	/** Capacity plan per person per sprint. */
 	protected List<SprintPersonCapacity> sprintPersonCapacities;
 	
-	
 	/**
 	 * Default constructor.
 	 */
 	public Sprint() {
 		super();
 	}
-
 
 	/**
 	 * @return the startDate
@@ -52,14 +51,12 @@ public class Sprint extends PlanEntity {
 		return startDate;
 	}
 
-
 	/**
 	 * @param startDate the startDate to set
 	 */
 	public void setStartDate(Calendar startDate) {
 		this.startDate = startDate;
 	}
-
 
 	/**
 	 * @return the endDate
@@ -68,14 +65,12 @@ public class Sprint extends PlanEntity {
 		return endDate;
 	}
 
-
 	/**
 	 * @param endDate the endDate to set
 	 */
 	public void setEndDate(Calendar endDate) {
 		this.endDate = endDate;
 	}
-
 
 	/**
 	 * @return the releasesToIntegration
@@ -84,14 +79,12 @@ public class Sprint extends PlanEntity {
 		return releasesToIntegration;
 	}
 
-
 	/**
 	 * @param releasesToIntegration the releasesToIntegration to set
 	 */
 	public void setReleasesToIntegration(List<Release> releasesToIntegration) {
 		this.releasesToIntegration = releasesToIntegration;
 	}
-
 
 	/**
 	 * @return the availableVelocities
@@ -100,14 +93,12 @@ public class Sprint extends PlanEntity {
 		return availableVelocities;
 	}
 
-
 	/**
 	 * @param availableVelocities the availableVelocities to set
 	 */
 	public void setAvailableVelocities(List<SprintTeamAvailability> availableVelocities) {
 		this.availableVelocities = availableVelocities;
 	}
-
 
 	/**
 	 * @return the assignedVelocities
@@ -116,14 +107,12 @@ public class Sprint extends PlanEntity {
 		return assignedVelocities;
 	}
 
-
 	/**
 	 * @param assignedVelocities the assignedVelocities to set
 	 */
 	public void setAssignedVelocities(List<SprintTeamActivityPlan> assignedVelocities) {
 		this.assignedVelocities = assignedVelocities;
 	}
-
 
 	/**
 	 * @return the sprintPersonCapacities
@@ -132,13 +121,21 @@ public class Sprint extends PlanEntity {
 		return sprintPersonCapacities;
 	}
 
-
 	/**
 	 * @param sprintPersonCapacities the sprintPersonCapacities to set
 	 */
 	public void setSprintPersonCapacities(List<SprintPersonCapacity> sprintPersonCapacities) {
 		this.sprintPersonCapacities = sprintPersonCapacities;
 	}
-	
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return PlanEntityUtils.toStringStandard(this, new String[] {
+			"name", "startDate", "endDate", "releasesToIntegration",
+			"availableVelocities", "assignedVelocities", "sprintPersonCapacities"});
+	}
 	
 }

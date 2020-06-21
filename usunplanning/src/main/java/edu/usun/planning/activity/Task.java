@@ -1,5 +1,7 @@
 package edu.usun.planning.activity;
 
+import edu.usun.planning.PlanEntityUtils;
+
 /**
  * Task (usually represents on demand support activity, e.g. UAT bug fixing bucket), 
  * as opposed to a feature which has a specific estimate.
@@ -26,11 +28,7 @@ public class Task extends Activity {
 	 */
 	@Override
 	public String toString() {
-		return new StringBuffer()
-			.append("Task{")
-			.append("name=").append(this.getName()).append(',')
-			.append("trackingReference=").append(this.getTrackingReference()).append(',')
-			.append("stream=").append(this.getStream())
-			.append('}').toString();
+		return PlanEntityUtils.toStringStandard(this, new String[] {
+			"name", "trackingReference", "stream"});
 	}
 }

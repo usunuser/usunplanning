@@ -1,9 +1,9 @@
 package edu.usun.planning.calendar;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import edu.usun.planning.PlanEntity;
+import edu.usun.planning.PlanEntityUtils;
 
 /**
  * Work calendars for office locations (marks public holidays, short work-days).
@@ -48,19 +48,7 @@ public class WorkCalendar extends PlanEntity {
 	 */
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer()
-			.append("WorkCalendar{")
-			.append("name=").append(this.getName()).append(',')
-			.append("publicHolidays=[");
-			
-		if (this.getPublicHolidays() != null && !this.getPublicHolidays().isEmpty()) {
-			sb.append(this.getPublicHolidays()
-				.stream()
-				.map(CapacityOverride::toString)
-				.collect(Collectors.joining(",")).toString());
-		}
-		
-		sb.append(']');
-		return sb.append('}').toString();
+		return PlanEntityUtils.toStringStandard(this, new String[] {
+			"name", "publicHolidays"});
 	}
 }

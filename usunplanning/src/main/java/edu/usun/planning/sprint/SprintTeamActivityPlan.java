@@ -1,11 +1,14 @@
 package edu.usun.planning.sprint;
 
+import java.math.BigDecimal;
+
 import edu.usun.planning.PlanEntity;
+import edu.usun.planning.PlanEntityUtils;
 import edu.usun.planning.activity.Activity;
 import edu.usun.planning.team.Team;
 
 /**
- * How much story points / velocity is planned by a team for a given activity within a given sprint.
+ * How much story points/velocity is planned by a team for a given activity within a given sprint.
  * Represents an assignment/plan.
  * 
  * @author usun
@@ -27,7 +30,7 @@ public class SprintTeamActivityPlan extends PlanEntity {
 	protected Activity activity;
 	
 	/** Team planned/assigned amount of story points for some activity within this sprint. */
-	protected int storyPoints;
+	protected BigDecimal storyPoints;
 	
 	/**
 	 * Default constructor.
@@ -67,15 +70,16 @@ public class SprintTeamActivityPlan extends PlanEntity {
 	/**
 	 * @return the storyPoints
 	 */
-	public int getStoryPoints() {
+	public BigDecimal getStoryPoints() {
 		return storyPoints;
 	}
 
 	/**
 	 * @param storyPoints the storyPoints to set
 	 */
-	public void setStoryPoints(int storyPoints) {
+	public void setStoryPoints(BigDecimal storyPoints) {
 		this.storyPoints = storyPoints;
+		;
 	}
 	
 	/**
@@ -83,9 +87,8 @@ public class SprintTeamActivityPlan extends PlanEntity {
 	 */
 	@Override
 	public String toString() {
-		return new StringBuffer().append(this.getName()).append('-').append(
-			this.getTeam() == null ? Team.TEAM_NOT_ASSIGNED : getTeam().getName()).append(
-				'-').append(this.getStoryPoints()).toString();
+		return PlanEntityUtils.toStringStandard(this, new String[] {
+			"sprint", "team", "activity", "storyPoints"});
 	}
 	
 }

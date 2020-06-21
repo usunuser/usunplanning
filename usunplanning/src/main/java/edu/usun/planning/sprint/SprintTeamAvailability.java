@@ -3,6 +3,7 @@ package edu.usun.planning.sprint;
 import java.math.BigDecimal;
 
 import edu.usun.planning.PlanEntity;
+import edu.usun.planning.PlanEntityUtils;
 import edu.usun.planning.team.Team;
 
 /**
@@ -75,6 +76,15 @@ public class SprintTeamAvailability extends PlanEntity {
 	 */
 	public void setVelocity(BigDecimal velocity) {
 		this.velocity = velocity;
+	}
+	
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return PlanEntityUtils.toStringStandard(this, new String[] {
+			"sprint", "team", "velocity"});
 	}
 
 }

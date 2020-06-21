@@ -3,6 +3,7 @@ package edu.usun.planning.sprint;
 import java.util.List;
 
 import edu.usun.planning.PlanEntity;
+import edu.usun.planning.PlanEntityUtils;
 import edu.usun.planning.team.Person;
 
 /**
@@ -20,7 +21,7 @@ import edu.usun.planning.team.Person;
  * Total UAT quota around 30% will be coming in waves and in around go-lives the velocity 
  * will be reduced to account for additional UAT. 
  * Another way to account for 7%+ difference with UAT quota is the fact that some devs and tests with velocity 
- * assigned less that 11sp will be assigned dis-proportionally more on support, 
+ * assigned less that 11sp will be assigned disproportionately more on support, 
  * and this should tilt totals for the team to match Business Case quotas on totals.
  * 
  * @author usun
@@ -95,4 +96,12 @@ public class SprintPersonCapacity extends PlanEntity {
 		this.breakdown = breakdown;
 	}
 
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return PlanEntityUtils.toStringStandard(this, new String[] {
+			"sprint", "person", "breakdown"});
+	}
 }

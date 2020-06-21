@@ -1,10 +1,10 @@
 package edu.usun.planning.calendar;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import edu.usun.planning.PlanEntity;
+import edu.usun.planning.PlanEntityUtils;
 
 /**
  * Represents either capacity reduction (from public holiday or vacation taken on a given day) 
@@ -70,11 +70,7 @@ public class CapacityOverride extends PlanEntity {
 	 */
 	@Override
 	public String toString() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		return new StringBuffer()
-			.append("CapacityOverride{")
-			.append("date=").append(this.getDate() == null ? "N/A" : sdf.format(this.getDate().getTime())).append(',')
-			.append("capacityFactor=").append(this.getCapacityFactor() == null ? "N/A" : this.getCapacityFactor().toPlainString())
-			.append('}').toString();
+		return PlanEntityUtils.toStringStandard(this, new String[] {
+			"date", "capacityFactor"});
 	}
 }

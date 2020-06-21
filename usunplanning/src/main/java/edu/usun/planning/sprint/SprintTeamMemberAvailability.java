@@ -1,10 +1,13 @@
 package edu.usun.planning.sprint;
 
+import java.math.BigDecimal;
+
 import edu.usun.planning.PlanEntity;
+import edu.usun.planning.PlanEntityUtils;
 import edu.usun.planning.team.TeamMember;
 
 /**
- * Individual availability of the team member during some sprint.
+ * Individual availability/velocity of the team member during some sprint.
  * 
  * @author usun
  */
@@ -20,10 +23,10 @@ public class SprintTeamMemberAvailability extends PlanEntity {
 	protected Sprint sprint;
 	
 	/** Team member. */
-	protected TeamMember member;
+	protected TeamMember teamMember;
 	
-	/** Velocity/capacity of a team member for a given sprint. In story points. */
-	protected int velocity;
+	/** Velocity of a team member for a given sprint. In story points. */
+	protected BigDecimal velocity;
 	
 	/**
 	 * Default constructor.
@@ -47,30 +50,40 @@ public class SprintTeamMemberAvailability extends PlanEntity {
 	}
 
 	/**
-	 * @return the member
+	 * @return the team member
 	 */
-	public TeamMember getMember() {
-		return member;
+	public TeamMember getTeamMember() {
+		return teamMember;
 	}
 
 	/**
-	 * @param member the member to set
+	 * @param teamMember the team member to set
 	 */
-	public void setMember(TeamMember member) {
-		this.member = member;
+	public void setTeamMember(TeamMember teamMember) {
+		this.teamMember = teamMember;
 	}
 
 	/**
 	 * @return the velocity
 	 */
-	public int getVelocity() {
+	public BigDecimal getVelocity() {
 		return velocity;
 	}
 
 	/**
 	 * @param velocity the velocity to set
 	 */
-	public void setVelocity(int velocity) {
+	public void setVelocity(BigDecimal velocity) {
 		this.velocity = velocity;
 	}
+	
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return PlanEntityUtils.toStringStandard(this, new String[] {
+			"sprint", "teamMember", "velocity"});
+	}
+
 }

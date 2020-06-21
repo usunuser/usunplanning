@@ -1,6 +1,7 @@
 package edu.usun.planning.activity;
 
 import edu.usun.planning.PlanEntity;
+import edu.usun.planning.PlanEntityUtils;
 import edu.usun.planning.stream.Stream;
 
 /**
@@ -68,11 +69,7 @@ public abstract class Activity extends PlanEntity {
 	 */
 	@Override
 	public String toString() {
-		return new StringBuffer()
-			.append("Activity{")
-			.append("name=").append(this.getName()).append(',')
-			.append("trackingReference=").append(this.getTrackingReference()).append(',')
-			.append("stream=").append(this.getStream())
-			.append('}').toString();
+		return PlanEntityUtils.toStringStandard(this, new String[] {
+			"name", "trackingReference", "stream"});
 	}
 }

@@ -1,6 +1,7 @@
 package edu.usun.planning.team;
 
 import edu.usun.planning.PlanEntity;
+import edu.usun.planning.PlanEntityUtils;
 
 /**
  * Represents a team/squad.
@@ -30,9 +31,7 @@ public class Team extends PlanEntity {
 	 */
 	@Override
 	public String toString() {
-		return new StringBuffer()
-			.append("Team{")
-			.append("name=").append(this.getName())
-			.append('}').toString();
+		return PlanEntityUtils.toStringStandard(this, new String[] {
+			"name"});
 	}
 }

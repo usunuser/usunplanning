@@ -2,6 +2,8 @@ package edu.usun.planning.activity;
 
 import java.math.BigDecimal;
 
+import edu.usun.planning.PlanEntityUtils;
+
 /**
  * Feature which has a specific estimate 
  * (should be nominated in the same units as velocity).
@@ -70,12 +72,7 @@ public class Feature extends Activity {
 	 */
 	@Override
 	public String toString() {
-		return new StringBuffer()
-			.append("Feature{")
-			.append("name=").append(this.getName()).append(',')
-			.append("trackingReference=").append(this.getTrackingReference()).append(',')
-			.append("featureReference=").append(this.getFeatureReference()).append(',')
-			.append("stream=").append(this.getStream())
-			.append('}').toString();
+		return PlanEntityUtils.toStringStandard(this, new String[] {
+			"name", "trackingReference", "featureReference", "stream", "remainingEstimate"});
 	}
 }

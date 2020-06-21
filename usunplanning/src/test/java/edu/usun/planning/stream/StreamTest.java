@@ -54,5 +54,22 @@ public class StreamTest {
 		stream.setName("test name");
 		assertTrue("test name".equals(stream.getName()));
 	}
+	
+	@Test
+	public void testToString() {
+		Stream stream = new Stream();
+		stream.setName("stream1");
+		assertTrue("Stream{name=stream1,activities=}".equals(stream.toString()));
+		
+		Task task = new Task();
+		task.setName("task1");
+		task.setStream(stream);
+		task.setTrackingReference("TTT-123");
+		List<Activity> activities = new ArrayList<>();
+		activities.add(task);
+		stream.setActivities(activities);
+		
+		assertTrue("Stream{name=stream1,activities=[Task{name=task1,trackingReference=TTT-123,stream=stream1}]}".equals(stream.toString()));
+	}
 
 }

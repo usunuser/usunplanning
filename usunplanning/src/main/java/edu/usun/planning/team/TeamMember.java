@@ -1,10 +1,10 @@
 package edu.usun.planning.team;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import edu.usun.planning.PlanEntity;
+import edu.usun.planning.PlanEntityUtils;
 import edu.usun.planning.calendar.WorkCalendar;
 
 /**
@@ -208,24 +208,8 @@ public class TeamMember extends PlanEntity {
 	 */
 	@Override
 	public String toString() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		StringBuffer sb = new StringBuffer()
-			.append("TeamMember{")
-			.append("name=").append(this.getName()).append(',')
-			.append("person=").append(this.getPerson() == null ? "N/A" : this.getPerson()).append(',')
-			.append("role=").append(this.getRole() == null ? "N/A" : this.getRole()).append(',')
-			.append("team=").append(this.getTeam() == null ? "N/A" : this.getTeam()).append(',')
-			.append("baseVelocityPerSprint=").append(this.getBaseVelocityPerSprint() == null ? "N/A" : 
-				this.getBaseVelocityPerSprint().toPlainString()).append(',')
-			.append("capacityFactor=").append(this.getCapacityFactor() == null ? "N/A" : 
-				this.getCapacityFactor().toPlainString()).append(',')
-			.append("workCalendar=").append(this.getWorkCalendar() == null ? "N/A" : this.getWorkCalendar()).append(',')
-			.append("startDate=").append(this.getStartDate() == null ? "N/A" : 
-				sdf.format(this.getStartDate().getTime())).append(',')
-			.append("endDate=").append(this.getEndDate() == null ? "N/A" : 
-				sdf.format(this.getEndDate().getTime())).append(',')
-			.append("notes=").append(this.getNotes());
-			
-		return sb.append('}').toString();
+		return PlanEntityUtils.toStringStandard(this, new String[] {
+			"name", "person", "role", "team", "baseVelocityPerSprint", "capacityFactor", 
+			"workCalendar", "startDate", "endDate", "notes"});
 	}
 }

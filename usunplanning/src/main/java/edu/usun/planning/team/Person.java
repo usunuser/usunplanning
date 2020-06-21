@@ -1,9 +1,9 @@
 package edu.usun.planning.team;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import edu.usun.planning.PlanEntity;
+import edu.usun.planning.PlanEntityUtils;
 import edu.usun.planning.calendar.CapacityOverride;
 	
 /**
@@ -50,19 +50,7 @@ public class Person extends PlanEntity {
 	 */
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer()
-			.append("Person{")
-			.append("name=").append(this.getName()).append(',')
-			.append("personalCapacityOverrides=[");
-
-		if (this.getPersonalCapacityOverrides() != null && !this.getPersonalCapacityOverrides().isEmpty()) {
-			sb.append(this.getPersonalCapacityOverrides()
-				.stream()
-				.map(CapacityOverride::toString)
-				.collect(Collectors.joining(",")).toString());
-		}
-		
-		sb.append(']');
-		return sb.append('}').toString();
+		return PlanEntityUtils.toStringStandard(this, new String[] {
+			"name", "personalCapacityOverrides"});
 	}
 }

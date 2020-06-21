@@ -3,9 +3,9 @@ package edu.usun.planning.stream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import edu.usun.planning.PlanEntity;
+import edu.usun.planning.PlanEntityUtils;
 import edu.usun.planning.activity.Activity;
 
 /**
@@ -68,19 +68,7 @@ public class Stream extends PlanEntity {
 	 */
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer()
-			.append("Stream{")
-			.append("name=").append(this.getName()).append(',')
-			.append("activities=[");
-
-		if (this.getActivities() != null && !this.getActivities().isEmpty()) {
-			sb.append(this.getActivities()
-				.stream()
-				.map(Activity::toString)
-				.collect(Collectors.joining(",")).toString());
-		}
-		
-		sb.append(']');
-		return sb.append('}').toString();
+		return PlanEntityUtils.toStringStandard(this, new String[] {
+			"name", "activities"});
 	}
 }

@@ -3,6 +3,7 @@ package edu.usun.planning.sprint;
 import java.math.BigDecimal;
 
 import edu.usun.planning.PlanEntity;
+import edu.usun.planning.PlanEntityUtils;
 
 /**
  * Capacity breakdown element/activity, e.g.:
@@ -86,14 +87,7 @@ public class CapacityBreakdownElement extends PlanEntity {
 	 */
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer()
-			.append("CapacityBreakdownElement{")
-			.append("velocity=").append(this.getVelocity() == null ? "N/A" : 
-				this.getVelocity().toPlainString()).append(',')
-			.append("capacityManDays=").append(this.getCapacityManDays() == null ? "N/A" : 
-				this.getCapacityManDays().toPlainString()).append(',')
-			.append("percentage=").append(this.getPercentage() == null ? "N/A" : 
-				this.getPercentage().toPlainString());
-		return sb.append('}').toString();
+		return PlanEntityUtils.toStringStandard(this, new String[] {
+			"velocity", "capacityManDays", "percentage"});
 	}
 }
